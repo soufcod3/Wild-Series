@@ -1,0 +1,41 @@
+@import "custom.scss";
+@import "~bootstrap/scss/bootstrap";
+
+h1 {
+    color: $light-green;
+}
+
+body {
+    background-color: $dark-green;
+}
+
+.navbar {
+    background-color: $medium-green;
+    height: 6.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem 0 2rem;
+
+    a {
+        color: $mustard;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .btn {
+        background-color: $green;
+        width: 9rem;
+        height: 3rem;
+        font-weight: 900;
+    }
+
+    .btn:hover {
+        background-color: $light-green;
+    }
+
+    .logo {
+        height: 2.5rem;
+        height: 2.5rem;
+        background: $mustard;
+    }
+}
