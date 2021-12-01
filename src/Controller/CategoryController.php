@@ -42,6 +42,7 @@ class CategoryController extends AbstractController
             );
         }
 
+        // Equivalent de select programs where category = ...
         $programs = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findBy(['category' => $category], ['id' => 'DESC'], 3);
