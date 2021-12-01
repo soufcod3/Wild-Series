@@ -1,7 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-{{ include('_navbar.html.twig') }}
+
 <h1>Bienvenue !</h1>
+<h2><a href="{{ path("program_index")}}">Séries</a></h2>
+<h2><a href="{{ path("category_index")}}">Catégories</a></h2>
 
 {% endblock %}
