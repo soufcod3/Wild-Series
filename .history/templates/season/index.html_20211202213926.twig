@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<h1>{{ program.title }} Seasons</h1><br>
+
+{% for season in seasons %}
+    <h2>Season {{ season.number }} </h2><br>
+    <p>Year: {{ season.year }}
+{% endfor %}
+
+{% endblock %}
