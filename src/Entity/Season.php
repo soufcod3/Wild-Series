@@ -19,6 +19,7 @@ class Season
      */
     private $id;
 
+    // Here Season is owner of program attribute, so it has inversedBy parameter
     /**
      * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="season")
      * @ORM\JoinColumn(nullable=false)

@@ -5,18 +5,23 @@
 {% endblock %}
 
 {% block body %}
-    <div class="media">
-        <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
-        <div class="media-body">
-            <h1 class="mt-0">{{ program.title }}</h1>
-            <p>{{ program.synopsis }}</p>
-            <p>Catégorie : {{ program.category.name }}</p>
-            {% for season in seasons %}
-                <p>{{ season.id }}</p>
-            {% endfor %}
+<div class="container">
+    <div class="card" style="width: 45rem">
+        <img class="card-img-top" src="{{program.poster}}" alt="Card image cap">
+        <div class="card-body">
+        <h5 class="card-title">{{ program.title }}</h5>
+        <p class="card-text">{{ program.synopsis }}</p>
         </div>
+        <ul class="list-group list-group-flush">
+            {% for season in seasons %}
+            <li class="list-group-item">
+                <h6>Season {{ season.number }}:</h6>
+                <p>{{ season.description }}</p>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
-
+</div>
     <a href="{{ path('program_index') }}">
         Retour à la liste des programmes
     </a>

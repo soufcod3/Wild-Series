@@ -41,6 +41,8 @@ class Program
      */
     private $category;
 
+    // The mappedBy parameter means the class ain't the owner of the attribute (here it's Program)
+    // This is transformed as season_id in the table by Doctrine
     /**
      * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program")
      */
@@ -124,6 +126,9 @@ class Program
 
     public function addSeason(Season $season): self
     {
+
+        // If the season of Program is different from the season in Season 
+        // (if a setSeason has been set)
         if (!$this->season->contains($season)) {
             $this->season[] = $season;
             $season->setProgram($this);

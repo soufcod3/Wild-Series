@@ -9,12 +9,43 @@ h2 {
     color: $mustard;
 }
 
+h5 {
+    color: $mustard;
+}
+
 p {
-    color: $green;
+    color:white;
 }
 
 body {
     background-color: $dark-green;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background-color: $darker-green;
+    padding: 1rem;
+    border: 1px solid $medium-green;
+    margin: 3rem;
+    display: inline-block;
+
+}
+.btn-primary {
+    background-color: $green;
+    color: $darker-green;
+    border: 1px solid $darker-green;
+}
+
+.list-group-item {
+    background-color: $green;
+}
+
+.list-group {
+    border-radius: 0.5rem;
 }
 
 .navbar {
