@@ -64,6 +64,8 @@ class ProgramController extends AbstractController
             ->getRepository(Season::class)
             ->findBy(['program' => $program]);
         
+        $actors = $program->getActors();
+        
         if (!$seasons) {
             throw $this->createNotFoundException(
                 'Cette saison n\'existe pas'
@@ -76,7 +78,7 @@ class ProgramController extends AbstractController
             );
         }
 
-        return $this->render("program/show.html.twig", ['program' => $program, 'seasons' => $seasons]);
+        return $this->render("program/show.html.twig", ['program' => $program, 'seasons' => $seasons, 'actors' => $actors]);
     }
 
     /**
@@ -112,5 +114,7 @@ class ProgramController extends AbstractController
     {
         return $this->render('episode/show.html.twig', ['program' => $programId, 'season' => $seasonNumber, 'episode' => $episodeId]);
     }
+
+
 
 }
