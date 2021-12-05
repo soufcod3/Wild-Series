@@ -9,7 +9,8 @@
           <h5 class="card-title">{{ loop.index }}. {{ program.title }}</h5>
           <h6 class="card-title">{{ program.category.name }}</h6>
           <p class="card-text">{{ program.synopsis }}</p>
-          <a href="{{ path("program_show", { id: program.id }) }}" class="btn btn-primary">Voir la fiche</a>
+          {# Pas du tout certain du slug: program.slug #}
+          <a href="{{ path("program_show", { slug: program.slug }) }}" class="btn btn-primary">Voir la fiche</a>
         </div>
     </div>
     {% else %}

@@ -12,6 +12,7 @@ use App\Entity\Episode;
 use App\Form\ProgramType;
 use App\Form\CategoryType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Service\Slugify;
 
 /**
  * @Route("/program/", name="program_")
@@ -35,15 +36,15 @@ class ProgramController extends AbstractController
     /**
      * @Route("new", name="new")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Slugify $slugify): Response
     {
         $program = new Program();
-
         $form = $this->createForm(ProgramType::class, $program);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($program);
             $entityManager->flush();
@@ -54,7 +55,7 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("{id}", requirements={"id"="\d+"}, name="show")
+     * @Route("{slug}", name="show")
      * @return Response
      */
     public function show(Program $program): Response
