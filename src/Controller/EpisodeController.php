@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugify;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use App\Entity\Comment;
+use App\Form\CommentType;
 
 /**
  * @Route("/episode")
@@ -61,13 +63,26 @@ class EpisodeController extends AbstractController
     }
 
     /**
-     * @Route("/{slug}", name="episode_show", methods={"GET"})
+     * @Route("/{slug}", name="episode_show", methods={"GET", "POST"})
      */
-    public function show(Episode $episode): Response
+    public function show(Episode $episode, EntityManagerInterface $entityManager, Request $request): Response
     {
-        return $this->render('episode/show.html.twig', [
-            'episode' => $episode,
-        ]);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setEpisode($episode);
+            $comment->setAuthor($this->getUser());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('comment_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('episode/show.html.twig', ['episode' => $episode, 'form' => $form->createView(), 'comments' =>$episode->getComments()]);
+        
     }
 
     /**

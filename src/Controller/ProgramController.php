@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Service\Slugify;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/program/", name="program_")
@@ -76,31 +77,24 @@ class ProgramController extends AbstractController
             ->findBy(['program' => $program]);
         
         $actors = $program->getActors();
-        
-        if (!$seasons) {
-            throw $this->createNotFoundException(
-                'Cette saison n\'existe pas'
-            );
-        }
 
         if (!$program) {
             throw $this->createNotFoundException(
                 'Cette série est introuvable'
             );
         }
-
         return $this->render("program/show.html.twig", ['program' => $program, 'seasons' => $seasons, 'actors' => $actors]);
     }
 
     /**
-     * @Route("{programId}/season/", name="seasons_show")
+     * @Route("{slug}/season/", name="seasons_show")
      */
-    public function showSeasons(int $programId): Response
+    public function showSeasons(Program $program): Response
     {
         // Let's select the program
         $program = $this->getDoctrine()
             ->getRepository(Program::class)
-            ->findOneBy(['id' => $programId]);
+            ->findOneBy(['slug' => $program]);
 
         // Let's get the seasons for a program
         $seasons = $this->getDoctrine()
@@ -111,20 +105,21 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("{programId}/season/{seasonNumber}", name="season_show")
+     * @Route("{slug}/season/{number}", name="season_show")
      */
-    public function showSeason(Program $programId, Season $seasonNumber): Response
+    public function showSeason(Program $program, Season $season): Response
     {
-        return $this->render('season/show.html.twig', ['program' => $programId, 'season' => $seasonNumber]);
+        return $this->render('season/show.html.twig', ['program' => $program, 'season' => $season]);
     }
 
     /**
-     * @Route("{programId}/season/{seasonNumber}/episode/{episodeId}", name="episode_show")
+     * @Route("{program_slug}/season/{number}/episode/{episode_slug}", name="episode_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"program_slug": "slug"}})
+     * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episode_slug": "slug"}})
      */
-    public function showEpisode(Program $programId, Season $seasonNumber, Episode $episodeId): Response
-    {
-        return $this->render('episode/show.html.twig', ['program' => $programId, 'season' => $seasonNumber, 'episode' => $episodeId]);
+    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    {   
+        return $this->render('episode/show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode]);
     }
-
 
 }
