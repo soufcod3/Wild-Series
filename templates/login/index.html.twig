@@ -20,4 +20,7 @@
 
         <button type="submit">login</button>
     </form>
+    {% if not app.user %}
+    <a href="{{ path('app_register')}}">Register</a> 
+    {% endif %}
 {% endblock %}

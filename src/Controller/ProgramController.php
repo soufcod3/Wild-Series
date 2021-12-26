@@ -34,6 +34,7 @@ class ProgramController extends AbstractController
         $programs = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findAll();
+
             
         return $this->render('program/index.html.twig', 
             ['programs' => $programs]

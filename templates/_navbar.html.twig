@@ -5,7 +5,8 @@
   </a>
   <form class="form-inline">
     {% if app.user %}
-    <a href="{{ path('app_logout') }}"><button class="btn" type="button">SE DÉCONNECTER</button></a>
+    <a href="{{ path('app_profile') }}"><button class="btn" type="button">MON COMPTE</button></a>
+    <a href="{{ path('app_logout') }}"><button class="btn" type="button">LOGOUT</button></a>
     {% else %}
     <a href="/login"><button class="btn" type="button">CONNEXION</button></a>
     {% endif %}
