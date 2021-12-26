@@ -11,9 +11,18 @@ class SeasonFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $season = new Season();
-            $season->setProgram($this->getReference('program_' . $i));
+            $season->setProgram($this->getReference('program_1'));
+            $season->setNumber($i);
+            $season->setYear('200' . $i);
+            $season->setDescription('Ceci est la description de la saison ' . $i);
+            $manager->persist($season);
+            $this->addReference('season' . $i, $season);
+        }
+        for ($i = 4; $i <= 6; $i++) {
+            $season = new Season();
+            $season->setProgram($this->getReference('program_2'));
             $season->setNumber($i);
             $season->setYear('200' . $i);
             $season->setDescription('Ceci est la description de la saison ' . $i);

@@ -10,9 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 /**
- * @Route("/comment")
+ * @IsGranted("ROLE_USER")
+ * @Route("/comments")
  */
 class CommentController extends AbstractController
 {
@@ -79,10 +82,18 @@ class CommentController extends AbstractController
     }
 
     /**
+     * 
      * @Route("/{id}", name="comment_delete", methods={"POST"})
      */
     public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
     {
+
+         // Check wether the logged in user is the owner of the program or the admin
+         if (!($this->getUser() == $comment->getAuthor() || in_array('ROLE_ADMIN', $this->getUser()->roles))) {
+            // If either the owner nor the admin, throws a 403 Access Denied exception
+            throw new AccessDeniedException('Only the author can delete the comment!');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();

@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Form\CategoryType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -21,19 +20,33 @@ class ProgramFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 1; $i <= 5; $i++) {
+
             $program = new Program();
             // Generating a slug for setTitle
-            $program->setTitle('Série ' . $i);
+            $program->setTitle('Série 1');
             // Setting the slug for Program object
             $program->setSlug($this->slugify->generate($program->getTitle()));
-            $program->setSynopsis('Ca c\'est le synopsis de la série ' . $i);
+            $program->setSynopsis('Ca c\'est le synopsis de la série 1');
             $program->setPoster('https://www.serieslike.com/img/shop_01.png');
             $program->setCategory($this->getReference('category_1'));
-            $program->addActor($this->getReference('actor_' . $i));
+            $program->addActor($this->getReference('actor_1'));
+            $program->setOwner($this->getReference('contributor'));
             $manager->persist($program);
-            $this->addReference('program_' . $i, $program);
-        }
+            $this->addReference('program_1', $program);
+        
+            $program = new Program();
+            // Generating a slug for setTitle
+            $program->setTitle('Série 2');
+            // Setting the slug for Program object
+            $program->setSlug($this->slugify->generate($program->getTitle()));
+            $program->setSynopsis('Ca c\'est le synopsis de la série 2');
+            $program->setPoster('https://www.serieslike.com/img/shop_01.png');
+            $program->setCategory($this->getReference('category_1'));
+            $program->addActor($this->getReference('actor_2'));
+            $program->setOwner($this->getReference('admin'));
+            $manager->persist($program);
+            $this->addReference('program_2', $program);
+
         $manager->flush();
     }
 
@@ -43,6 +56,7 @@ class ProgramFixtures extends Fixture
         return [
             ActorFixtures::class,
             CategoryFixtures::class,
+            OUserFixtures::class,
         ];
     }
 }

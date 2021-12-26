@@ -9,6 +9,7 @@ use App\Entity\Category;
 use App\Entity\Program;
 use App\Form\CategoryType;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/category/", name="category_")
@@ -30,6 +31,7 @@ class CategoryController extends AbstractController
     /**
      * Form to add a category
      * 
+     * @IsGranted("ROLE_ADMIN")
      * @Route("new", name="new")
      */
     public function new(Request $request): Response
