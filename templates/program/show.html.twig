@@ -20,14 +20,12 @@
             </li>
             {% endfor %}
         </ul>
-        <strong>Acteurs :</strong>
-        <ul>
-            {% for actor in program.actors %}
-                <li>{{ actor.name }}</li>
-            {% else %}
-                <li>Aucun acteur pour cette série</li>
-            {% endfor %}
-        </ul>
+        <h5>Acteurs :</h5>
+        {% for actor in program.actors %}
+            <h5>{{ actor.firstName }} {{ actor.lastName }}</h5>
+        {% else %}
+            <h5>Aucun acteur pour cette série</h5>
+        {% endfor %}
         {% if is_granted("ROLE_ADMIN") %}
             <a href="{{ path('program_edit', { 'slug': program.slug} ) }}">Éditer</a>
         {% endif %}

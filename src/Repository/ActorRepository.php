@@ -19,6 +19,16 @@ class ActorRepository extends ServiceEntityRepository
         parent::__construct($registry, Actor::class);
     }
 
+    public function findLikeActorName(string $name)
+    {
+        $queryBuilder = $this->createQueryBuilder('a')
+            ->where('a.lastName LIKE :name')
+            ->setParameter('name', '%' . $name . '%')
+            ->getQuery();
+
+        return $queryBuilder->getResult();
+    }
+
     // /**
     //  * @return Actor[] Returns an array of Actor objects
     //  */

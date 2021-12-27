@@ -13,6 +13,9 @@ use App\Entity\Episode;
 use App\Form\ProgramType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
+use App\Form\SearchProgramType;
+use App\Repository\ActorRepository;
+use App\Repository\ProgramRepository;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +23,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/program/", name="program_")
@@ -29,15 +33,26 @@ class ProgramController extends AbstractController
     /**
      * @Route("", name="index")
      */ 
-    public function index(): Response
+    public function index(Request $request, ProgramRepository $programRepository, ActorRepository $actorRepository): Response
     {
         $programs = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findAll();
 
+        $form = $this->createForm(SearchProgramType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->getData()['search'];
+            $programs = $programRepository->findLikeNameAndActor($search);
+        } else {
+            $programs = $programRepository->findAll();
+        }
+
             
         return $this->render('program/index.html.twig', 
-            ['programs' => $programs]
+            ['programs' => $programs,
+            'form' => $form->createView()]
         );
     }
 
@@ -93,6 +108,7 @@ class ProgramController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Route("{slug}/edit", name="edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Program $program, EntityManagerInterface $entityManager): Response

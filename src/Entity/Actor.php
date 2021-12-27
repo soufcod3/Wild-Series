@@ -22,12 +22,18 @@ class Actor
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private $firstName;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $lastName;
 
     /**
      * @ORM\ManyToMany(targetEntity=Program::class, inversedBy="actors")
      */
     private $programs;
+
 
     public function __construct()
     {
@@ -39,14 +45,27 @@ class Actor
         return $this->id;
     }
 
-    public function getName(): ?string
+
+    public function getFirstName(): ?string
     {
-        return $this->name;
+        return $this->firstName;
     }
 
-    public function setName(string $name): self
+    public function setFirstName(string $firstName): self
     {
-        $this->name = $name;
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = $lastName;
 
         return $this;
     }

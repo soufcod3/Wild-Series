@@ -24,13 +24,15 @@ class ProgramType extends AbstractType
             ->add('category', null, ['choice_label' => 'name'])
             ->add('actors', EntityType::class, [
             'class' => Actor::class,
-            //Return of getSelector() method in Entity\Actor
-            'choice_label' => 'name',
+            //function to return the actor full name (to concatenate columns)
+            'choice_label' => function (Actor $actor) {
+                return $actor->getFirstName() . ' ' . $actor->getLastName();
+            },
             'multiple' => true,
             'expanded' => false,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('u')
-                    ->orderBy('u.name', 'ASC');
+                    ->orderBy('u.firstName', 'ASC');
             },
             'by_reference' => false,]
         );

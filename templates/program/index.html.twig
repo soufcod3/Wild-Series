@@ -2,6 +2,11 @@
 
 {% block body %}
     <h1>Toutes les séries : </h1>
+    <h4>Rechercher: </h4>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>Search</button>
+    {{ form_end(form) }}
     {% for program in programs %}
     <div class="card" style="width: 25rem;">
         <img class="card-img-top" src="{{ program.poster }}" alt="Card image cap">
