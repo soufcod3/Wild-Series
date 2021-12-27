@@ -24,6 +24,7 @@ use Symfony\Component\Mime\Email;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @Route("/program/", name="program_")
@@ -33,8 +34,15 @@ class ProgramController extends AbstractController
     /**
      * @Route("", name="index")
      */ 
-    public function index(Request $request, ProgramRepository $programRepository, ActorRepository $actorRepository): Response
+    public function index(Request $request, ProgramRepository $programRepository, ActorRepository $actorRepository, SessionInterface $session): Response
     {
+
+        if (!$session->has('total')) {
+            $session->set('total', 0); // if total doesn’t exist in session, it is initialized.
+        }
+
+        $total = $session->get('total'); // get actual value in session with ‘total' key.
+
         $programs = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findAll();
@@ -45,6 +53,7 @@ class ProgramController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $search = $form->getData()['search'];
             $programs = $programRepository->findLikeNameAndActor($search);
+
         } else {
             $programs = $programRepository->findAll();
         }
@@ -52,7 +61,8 @@ class ProgramController extends AbstractController
             
         return $this->render('program/index.html.twig', 
             ['programs' => $programs,
-            'form' => $form->createView()]
+            'form' => $form->createView(),
+            'total' => $total]
         );
     }
 
@@ -79,6 +89,9 @@ class ProgramController extends AbstractController
                     ->subject('Une nouvelle série vient d\'etre publiée !')
                     ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]));
             $mailer->send($email);
+
+            // Once the form is submitted, valid and the data inserted in database, you can define the success flash message
+            $this->addFlash('success', 'The new program has been created');
 
             return $this->redirectToRoute('program_index');
         }
@@ -124,6 +137,8 @@ class ProgramController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->addFlash('success', 'The program has been edited');
 
             return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -182,6 +197,21 @@ class ProgramController extends AbstractController
         }
 
         return $this->render('episode/show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode, 'form' => $form->createView(), 'comments' =>$episode->getComments()]);
+    }
+
+    /**
+     * @Route("/{slug}", name="delete", methods={"POST"})
+     */
+    public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getSlug(), $request->request->get('_token'))) {
+            $entityManager->remove($program);
+            $entityManager->flush();
+
+            $this->addFlash('danger', 'The program has been deleted');
+        }
+
+        return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
     }
 
 }

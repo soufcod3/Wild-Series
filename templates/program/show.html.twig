@@ -29,6 +29,9 @@
         {% if is_granted("ROLE_ADMIN") %}
             <a href="{{ path('program_edit', { 'slug': program.slug} ) }}">Éditer</a>
         {% endif %}
+        {% if is_granted("ROLE_ADMIN")  %}
+            {{ include('program/_delete_form.html.twig') }}
+        {% endif %}
     </div>
 </div>
     <a href="{{ path('program_index') }}">
