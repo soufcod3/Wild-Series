@@ -200,7 +200,7 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{slug}", name="delete", methods={"POST"})
+     * @Route("{slug}/delete", name="delete", methods={"POST"})
      */
     public function delete(Request $request, Program $program, EntityManagerInterface $entityManager): Response
     {
@@ -214,4 +214,29 @@ class ProgramController extends AbstractController
         return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("{id}/watchlist", name="watchlist", methods={"GET", "POST"})
+     */
+    public function addToWatchList(Program $programId)
+    {
+        $program = $this->getDoctrine()
+            ->getRepository(Program::class)
+            ->findOneBy(['id' => $programId]);
+
+        if ($this->getUser()->isInWatchlist($program)) {
+            $this->getUser()->removeWatchlist($program);
+        } else {
+            $this->getUser()->addWatchlist($program);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($program);
+        $entityManager->flush();
+
+        // AJAX
+        return $this->json([
+            'isInWatchlist' => $this->getUser()->isInWatchlist($program)
+        ]);
+    }
 }
